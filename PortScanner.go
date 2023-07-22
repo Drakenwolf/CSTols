@@ -1,35 +1,43 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
 func main() {
 
-	if len(os.Args) < 2 {
-		fmt.Println("Usage: ./portscanner <target>")
-		os.Exit(1)
-	}
+	reader := bufio.NewReader(os.Stdin)
 
-	target := os.Args[1]
+	for {
+		fmt.Print("Enter target: ")
+		input, _ := reader.ReadString('\n')
+		target := strings.TrimSpace(input)
 
-	ports := []int{80, 443, 8080}
-	timeout := 1 * time.Second
-
-	for _, port := range ports {
-		conn, err := net.DialTimeout("tcp", target+":"+strconv.Itoa(port), timeout)
-		if err != nil {
-			fmt.Println("Port", port, "is closed on", target)
-		} else {
-			conn.Close()
-			fmt.Println("Port", port, "is open on", target)
+		if target == "exit" {
+			fmt.Println("Exiting")
+			os.Exit(0)
 		}
-	}
 
-	fmt.Println("Scan completed for ports", ports, "on host", target)
+		ports := []int{80, 443, 8080}
+		timeout := 1 * time.Second
+
+		for _, port := range ports {
+			conn, err := net.DialTimeout("tcp", target+":"+strconv.Itoa(port), timeout)
+			if err != nil {
+				fmt.Println("Port", port, "is closed on", target)
+			} else {
+				conn.Close()
+				fmt.Println("Port", port, "is open on", target)
+			}
+		}
+
+		fmt.Println("Scan completed for", target)
+	}
 
 }
