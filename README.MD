@@ -1,6 +1,6 @@
 # Project BlueGorilla 
 
-
+![Alt text](image.png)
 
 ## Description
 
